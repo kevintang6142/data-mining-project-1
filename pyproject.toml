@@ -8,5 +8,6 @@ dependencies = [
     "matplotlib>=3.11.2",
     "numpy>=2.5.3",
     "scikit-learn>=1.9.1",
+    "statsmodels>=0.15.0",
     "ucimlrepo>=0.0.7",
 ]
