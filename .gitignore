@@ -1,2 +1,7 @@
 .venv/
 .ipynb_checkpoints/
+
+# tex
+part-three-written/*
+!part-three-written/*.pdf
+!part-three-written/*.tex
