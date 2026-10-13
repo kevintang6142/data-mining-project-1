@@ -1,14 +1,17 @@
 %!TEX program = xelatex
 
-\documentclass[12pt,twocolumn,letterpaper]{article}
+\documentclass[12pt,letterpaper]{article}
 
 \usepackage[english]{babel}
-\usepackage[a4paper,top=1cm,bottom=1cm,left=1cm,right=1cm]{geometry}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{natbib}
 \usepackage{authblk}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
 
 \title{\huge Part Three}
 
@@ -22,49 +25,81 @@
 
 \section{Algorithmic Design and Implementation Details}
 
-Page target: ~0.5 - 1 page, excluding code blocks, tables, and figures
-State the mathematical objective function.
-Derive and state the gradient equation used for parameter updates.
-Provide clean pseudocode for your custom gradient descent function. Detail
-hyperparameter settings, including learning rate 𝛼, maximum iterations, and stopping
-criteria.
-Detail your software environment, dependencies (e.g., Python 3.x, NumPy, pandas,
-statsmodels), and exact dataset partition steps (900 train / 130 test split).
+% Page target: ~0.5 - 1 page, excluding code blocks, tables, and figures
+% State the mathematical objective function.
+% Derive and state the gradient equation used for parameter updates.
+% Provide clean pseudocode for your custom gradient descent function. Detail
+% hyperparameter settings, including learning rate 𝛼, maximum iterations, and stopping
+% criteria.
+% Detail your software environment, dependencies (e.g., Python 3.x, NumPy, pandas,
+% statsmodels), and exact dataset partition steps (900 train / 130 test split).
+
+The objective function is Mean Squared Error (MSE), defined as $MSE = \frac{1}{n} \sum_{i=1}^{n}(y_i - \hat y_i)^2$.
+
+Then, the gradient equation used for parameter updates for step $i$ can be calculated as:
+
+\[w^{i+1} = w^{i} - \alpha \frac{\delta MSE}{\delta m}\]
+\[\frac{\delta MSE}{\delta m} = \frac{-2}{n} \sum_{i=1}^{n}(y_i - (mx_i + b))\]
+
+\begin{algorithm}
+    \caption{Gradient Descent}
+    \label{alg:gradient-descent}
+    \begin{algorithmic}
+        \Procedure{Gradient Descent}{$X, y, \eta, N$}
+            \State Initialize $W^{0}, b^{0}$
+            \For{$i = 0$ to $N$}
+                \State $\text{err} = f(X, W, b) - y$
+                \State $W^{i+1} = W^{i} - \eta \cdot \dfrac{2}{|X|} X^{\top} \text{err}$
+                \State $b^{i+1} = b^{i} - \eta \cdot 2\,\overline{\text{err}}$
+            \EndFor
+            \State \Return $W^{N}, b^{N}$
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+Our dependencies were:
+
+ucimlrepo 0.0.7, pandas 3.0.5, matplotlib 3.11.2, numpy 2.5.3, scikit-learn 1.9.1, statsmodels 0.15.0, python 3.12
+                    
+We designated rows 501–630 as the testing set (130 samples) and the remaining 900
+samples as the training set, and split into a features matrix and output vector for each set. Model parameters were not updated based on the test dataset.
+
+We set a list of learning rates for $\alpha$ = [1e-9, 1e-8, 1e-7], initial coefficient weights matrix to be all zeroes, initial bias to be zero, and iterations to be 1000. We stop the algorithm after i=1000 completes.
+
+Then, loop over lrs and find the coefficient weights matrix, bias, along with mse and r2 over time as requested.
 
 \section{Feature Scaling and Gradient Descent Dynamics}
 
-Page target: ~1 page, excluding code blocks, tables, and figures
-Summarize your approach and results of the Part 1 analyses:
-• Scaling and Convergence Speed
-• Scaling and The Optimal Solution
-Include any relevant figures/tables/charts.
+% Page target: ~1 page, excluding code blocks, tables, and figures
+% Summarize your approach and results of the Part 1 analyses:
+% • Scaling and Convergence Speed
+% • Scaling and The Optimal Solution
+% Include any relevant figures/tables/charts.
 
 \section{Linear vs. Non-Linear Feature Transformations}
 
-Page target: ~1 page, excluding code blocks, tables, and figures
-Summarize your approach and results of the Part 1 analysis: Non-Linear Transformations
-Include any relevant figures/tables/charts.
+% Page target: ~1 page, excluding code blocks, tables, and figures
+% Summarize your approach and results of the Part 1 analysis: Non-Linear Transformations
+% Include any relevant figures/tables/charts.
 
 \section{Univariate vs. Multivariate Model Dyanamics}
 
-Page target: ~1 page, excluding code blocks, tables, and figures
-Summarize your approach and results of the Part 1 analysis: Univariate vs. Multivariate
-Coefficients
-Include any relevant figures/tables/charts.
+% Page target: ~1 page, excluding code blocks, tables, and figures
+% Summarize your approach and results of the Part 1 analysis: Univariate vs. Multivariate
+% Coefficients
+% Include any relevant figures/tables/charts.
 
 \section{Statistical Inference and Regression Analysis}
 
-Page target: ~1 page, excluding code blocks, tables, and figures
-Summarize your approach and results of the Part 1 analysis: Statistical Significance (p-
-values)
+% Page target: ~1 page, excluding code blocks, tables, and figures
+% Summarize your approach and results of the Part 1 analysis: Statistical Significance (p-
+% values)
 
 \section{Code and Reproducibility Access}
 
-Provide explicit instructions to reproduce all experimental results, including command-
-line arguments or notebook execution orders.
-Include a working link to a public GitHub repository or specify attached code files
-containing your implementation.
-
-
+% Provide explicit instructions to reproduce all experimental results, including command-
+% line arguments or notebook execution orders.
+% Include a working link to a public GitHub repository or specify attached code files
+% containing your implementation.
 
 \end{document}
