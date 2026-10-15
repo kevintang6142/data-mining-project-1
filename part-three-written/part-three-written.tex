@@ -6,6 +6,7 @@
 \usepackage[a4paper,top=2cm,bottom=2cm,left=1cm,right=1cm]{geometry}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{booktabs}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{natbib}
 \usepackage{authblk}
@@ -77,8 +78,6 @@ Then, loop over lrs and find the coefficient weights matrix, bias, along with ms
 
 The two implementations for the unscaled and scaled features for the multivariate model used the same features, the same train/test split, the same zero-initialized weights, the same 1000 iterations, and the same gradient descent functions. In the implementation for the unscaled features multivariate model, raw features are used directly, and since their magnitudes vary quite wildly, the loss surface becomes quite sharp. As such, we chose to use extremely tiny learning rates ($1e-9$ to $1e-7$) so that the curve would converge. In the implementation for the scaled features multivariate model, the features matrix is standardized using the training set's mean and standard deviation, which makes the loss function much smoother. As a result, we use much larger learning rates ($1e-4$ to $1e-2$) which lead to convergence of gradient descent more smoothly.
 
-% Chart(s) here from assets/unscaled vs scaled
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.75\textwidth]{assets/unscaled_fsgd.png}
@@ -91,13 +90,24 @@ The two implementations for the unscaled and scaled features for the multivariat
     \caption{The scaled multivariate model and its MSE and $R^2$.}\label{fig:scaled_fsgd}
 \end{figure}
 
-Comparing Fig. \ref{fig:unscaled_fsgd} and Fig. \ref{fig:scaled_fsgd}, we find that our algorithm performs better on the test set (lower MSE and a higher $R^2$) when we scale the features compared to when we do not scale the features.
+Comparing Figure \ref{fig:unscaled_fsgd} and Figure \ref{fig:scaled_fsgd}, we find that our algorithm performs better on the test set (lower MSE and a higher $R^2$) when we scale the features compared to when we do not scale the features.
 
 Finally, we used sklearn to find the optimal solution for an unscaled multivariate model and a scaled multivariate model. This was implemented by fitting two sklearn LinearRegression models, with one on the unscaled training feature matrix, and the other on the scaled training feature matrix, and calculating MSE and $R^2$ for both.
 
-% table here for the values below
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        & \textbf{Unscaled Multivariate Model} & \textbf{Scaled Multivariate Model} \\
+        \midrule
+        MSE & 141.258 & 141.258 \\
+        $R^2$ & 0.351 & 0.351 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Comparison of a sklearn unscaled multivariate model with a sklearn scaled multivariate model.}\label{tab:unscaled_vs_s_fsgd}
+\end{table}
 
-We found that scaling does not meaningfully change the optimal mathematical solution. Although the weights are different for a scaled model, the output of the scaled model on scaled inputs is identical to the output of the unscaled model on unscaled inputs. We can see that the MSE and $R^2$ on the test set for both a scaled and unscaled model are identical, at 141.25799330049728 and 0.35125143823506555 respectively.
+As shown in Table \ref{tab:unscaled_vs_s_fsgd}, scaling does not meaningfully change the optimal mathematical solution. Although the weight values are different for a scaled model, the output of the scaled model on scaled inputs is identical to the output of the unscaled model on unscaled inputs. We observe that the MSE and $R^2$ on the test set for both a scaled and unscaled model are identical, at 141.258 and 0.351 respectively.
 
 \section{Linear vs. Non-Linear Feature Transformations}
 
