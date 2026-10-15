@@ -75,15 +75,29 @@ Then, loop over lrs and find the coefficient weights matrix, bias, along with ms
 % • Scaling and The Optimal Solution
 % Include any relevant figures/tables/charts.
 
-The two implementations for the unscaled and scaled features for the multivariate model used the same features, the same train/test split, the same zero-initialized weights, the same 1000 iterations, and the same gradient descent functions. In the implementation for the unscaled features multivariate model, raw features are used directly, and since their magnitudes vary quite wildly, the loss surface becomes quite sharp. As such, we chose to use extremely tiny learning rates ($1e-9$ to $1e-7$) so that the curve would converge. In the implementation for the scaled features multivariate model, the features are standardized using the training set's mean and standard deviation, which makes the loss function much smoother. As a result, we use much larger learning rates ($1e-4$ to $1e-2$) which lead to convergence of gradient descent more smoothly.
+The two implementations for the unscaled and scaled features for the multivariate model used the same features, the same train/test split, the same zero-initialized weights, the same 1000 iterations, and the same gradient descent functions. In the implementation for the unscaled features multivariate model, raw features are used directly, and since their magnitudes vary quite wildly, the loss surface becomes quite sharp. As such, we chose to use extremely tiny learning rates ($1e-9$ to $1e-7$) so that the curve would converge. In the implementation for the scaled features multivariate model, the features matrix is standardized using the training set's mean and standard deviation, which makes the loss function much smoother. As a result, we use much larger learning rates ($1e-4$ to $1e-2$) which lead to convergence of gradient descent more smoothly.
 
-Our implementation of multivariate model using untransformed features, and another using scaled features, until they both achieve a positive r2
+% Chart(s) here from assets/unscaled vs scaled
 
-Chart here from assets/unscaled vs scaled
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{assets/unscaled_fsgd.png}
+    \caption{The unscaled multivariate model and its MSE and $R^2$.}\label{fig:unscaled_fsgd}
+\end{figure}
 
-Feature scaling (normalization by z-score) allowed the weights of the model to converge more quickly. Because the values in general are smaller than without scaling, we tested a higher-valued set of learning rates. When we used the smaller learning rates we had to use for unnormalized data, the model did not learn at a sufficient pace or converge. Also, scaling brings the values from different features closer to each other, so training using scaled features becomes smoother as well, as shown in the above chart. Overall, we find that our algorithm performs better on the test set (lower MSE and higher R2) when we scale the features.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{assets/scaled_fsgd.png}
+    \caption{The scaled multivariate model and its MSE and $R^2$.}\label{fig:scaled_fsgd}
+\end{figure}
 
-A linear transformation does not meaningfully change the optimal mathematical solution. Although the weights are different for a scaled model, the output of the scaled model on scaled inputs is identical to the output of the unscaled model on unscaled inputs.  We can see that the MSE on the test set for both a scaled and unscaled model are identical, at 141.25799330049728 and 0.35125143823506555 respectively.
+Comparing Fig. \ref{fig:unscaled_fsgd} and Fig. \ref{fig:scaled_fsgd}, we find that our algorithm performs better on the test set (lower MSE and a higher $R^2$) when we scale the features compared to when we do not scale the features.
+
+Finally, we used sklearn to find the optimal solution for an unscaled multivariate model and a scaled multivariate model. This was implemented by fitting two sklearn LinearRegression models, with one on the unscaled training feature matrix, and the other on the scaled training feature matrix, and calculating MSE and $R^2$ for both.
+
+% table here for the values below
+
+We found that scaling does not meaningfully change the optimal mathematical solution. Although the weights are different for a scaled model, the output of the scaled model on scaled inputs is identical to the output of the unscaled model on unscaled inputs. We can see that the MSE and $R^2$ on the test set for both a scaled and unscaled model are identical, at 141.25799330049728 and 0.35125143823506555 respectively.
 
 \section{Linear vs. Non-Linear Feature Transformations}
 
@@ -91,11 +105,11 @@ A linear transformation does not meaningfully change the optimal mathematical so
 % Summarize your approach and results of the Part 1 analysis: Non-Linear Transformations
 % Include any relevant figures/tables/charts.
 
-chart here from assets/nonlinear
+% chart here from assets/nonlinear
 
 The log transformation increases convergence speed and stability greatly over the unscaled features, and we were able to use much higher learning rates without the model diverging. This is expected, because similarly to the z-score scaling, it brings the distribution of all the features closer to one another by bringing down extremely large values so that gradient descent proceeds more smoothly.
 
-table here from assets/nonlinear table
+% table here from assets/nonlinear table
 
 While the untransformed and normalized models perform the same on the testing and training sets, the log transform, which is nonlinear, improved the optimal solution and overall predictive performance. This is because the log transformation helps with features that don't have a linear relationship with the target feature, as well as making right-skewed distributions more normal by stretching out low-valued data and compressing high-valued data, which reduces heteroscedasticity.
 
@@ -108,7 +122,7 @@ While the untransformed and normalized models perform the same on the testing an
 
 The easiest model to train was Concrete, as it quickly converged to a positive R2 during training with the learning rates we tested. The most difficult models were Superplasticizer, Coarse Aggregate, and Fine Aggregate, which we were unable to get to converge properly at the learning rates that worked, and if we increased the learning rates too much, the model diverged and gave us an overflow error/nan.
 
-assets/coeff table here
+% assets/coeff table here
 
 The coefficients for the models involving individual features are different from the corresponding coefficient in the multivariate model. For example, perhaps the largest differences are that Fly Ash, Coarse Aggregate, and Fine Aggregate have a positive correlation with the target feature in the multivariate model while they have a negative correlation in their respective univariate models.
 
@@ -120,7 +134,7 @@ Univariate coefficients are not equal to multivariate coefficients because some 
 % Summarize your approach and results of the Part 1 analysis: Statistical Significance (p-
 % values)
 
-/assets p vals table
+% /assets p vals table
 
 There are trends between which predictors are important, and which univariate models were easier to train? For example, a lower p-value meant the univariate model corresponding to that feature was easier to train. We found that Cement was the univariate models that converged the most quickly and smoothly, agreeing with its small p-values, while we had some more trouble getting Superplasticizer, Coarse Aggregate, and Fine Aggregate to converge properly at the learning rates we tried, which makes sense, looking at their relatively large p-values.
 
