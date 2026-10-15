@@ -115,9 +115,15 @@ As shown in Table \ref{tab:unscaled_vs_s_fsgd}, scaling does not meaningfully ch
 % Summarize your approach and results of the Part 1 analysis: Non-Linear Transformations
 % Include any relevant figures/tables/charts.
 
-% chart here from assets/nonlinear
+A logarithmic transformation, $\log(x+1)$, was applied to the base feature matrix and a new multivariate model was trained on the custom gradient descent implementation.
 
-The log transformation increases convergence speed and stability greatly over the unscaled features, and we were able to use much higher learning rates without the model diverging. This is expected, because similarly to the z-score scaling, it brings the distribution of all the features closer to one another by bringing down extremely large values so that gradient descent proceeds more smoothly.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{assets/linear_vs_log.png}
+    \caption{The logarithmically transformed multivariate model and its MSE and $R^2$.}\label{fig:log_mv}
+\end{figure}
+
+The log transformation increases convergence speed and stability greatly over the unscaled features as shown in Figure \ref{fig:log_mv}. We were able to use much higher learning rates without the model diverging. This is expected, because similarly to the z-score scaling, it brings the distribution of all the features closer to one another by bringing down extremely large values so that gradient descent proceeds more smoothly.
 
 % table here from assets/nonlinear table
 
