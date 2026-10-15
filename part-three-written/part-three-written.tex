@@ -102,6 +102,14 @@ While the untransformed and normalized models perform the same on the testing an
 % Coefficients
 % Include any relevant figures/tables/charts.
 
+The easiest model to train was Concrete, as it quickly converged to a positive R2 during training with the learning rates we tested. The most difficult models were Superplasticizer, Coarse Aggregate, and Fine Aggregate, which we were unable to get to converge properly at the learning rates that worked, and if we increased the learning rates too much, the model diverged and gave us an overflow error/nan.
+
+assets/coeff table here
+
+The coefficients for the models involving individual features are different from the corresponding coefficient in the multivariate model. For example, perhaps the largest differences are that Fly Ash, Coarse Aggregate, and Fine Aggregate have a positive correlation with the target feature in the multivariate model while they have a negative correlation in their respective univariate models.
+
+Univariate coefficients are not equal to multivariate coefficients because some features in our dataset may correlate with one another. Therefore, when training the univariate model for a single feature such as Fly Ash, the single coefficient will also account for the effects of all other features that are correlated to Fly Ash, which is omitted variable bias. When we train the multivariate model however, weights will be assigned based on only the contribution of that feature to achieve the lowest possible error, since the overall model now includes all features, eliminating omitted variable bias.
+
 \section{Statistical Inference and Regression Analysis}
 
 % Page target: ~1 page, excluding code blocks, tables, and figures
