@@ -75,6 +75,10 @@ Then, loop over lrs and find the coefficient weights matrix, bias, along with ms
 % • Scaling and The Optimal Solution
 % Include any relevant figures/tables/charts.
 
+The two implementations for the unscaled and scaled features for the multivariate model used the same features, the same train/test split, the same zero-initialized weights, the same 1000 iterations, and the same gradient descent functions. In the implementation for the unscaled features multivariate model, raw features are used directly, and since their magnitudes vary quite wildly, the loss surface becomes quite sharp. As such, we chose to use extremely tiny learning rates ($1e-9$ to $1e-7$) so that the curve would converge. In the implementation for the scaled features multivariate model, the features are standardized using the training set's mean and standard deviation, which makes the loss function much smoother. As a result, we use much larger learning rates ($1e-4$ to $1e-2$) which lead to convergence of gradient descent more smoothly.
+
+Our implementation of multivariate model using untransformed features, and another using scaled features, until they both achieve a positive r2
+
 Chart here from assets/unscaled vs scaled
 
 Feature scaling (normalization by z-score) allowed the weights of the model to converge more quickly. Because the values in general are smaller than without scaling, we tested a higher-valued set of learning rates. When we used the smaller learning rates we had to use for unnormalized data, the model did not learn at a sufficient pace or converge. Also, scaling brings the values from different features closer to each other, so training using scaled features becomes smoother as well, as shown in the above chart. Overall, we find that our algorithm performs better on the test set (lower MSE and higher R2) when we scale the features.
@@ -115,6 +119,12 @@ Univariate coefficients are not equal to multivariate coefficients because some 
 % Page target: ~1 page, excluding code blocks, tables, and figures
 % Summarize your approach and results of the Part 1 analysis: Statistical Significance (p-
 % values)
+
+/assets p vals table
+
+There are trends between which predictors are important, and which univariate models were easier to train? For example, a lower p-value meant the univariate model corresponding to that feature was easier to train. We found that Cement was the univariate models that converged the most quickly and smoothly, agreeing with its small p-values, while we had some more trouble getting Superplasticizer, Coarse Aggregate, and Fine Aggregate to converge properly at the learning rates we tried, which makes sense, looking at their relatively large p-values.
+
+We observe log transformation changes the p-values significantly, while the p-values of the normalized model are exactly the same as without feature scaling. This is because normalization is a linear transformation, so it will not affect the underlying shape of the distribution of any of the features, and the t-statistic remains the same as before mathematically. However, with log scaling, it is not linear, and the shapes of the distributions are not preserved so the p-value can change, decreasing especially in instances where the original data was not linear/skewed and made more linear by the transformation.
 
 \section{Code and Reproducibility Access}
 
