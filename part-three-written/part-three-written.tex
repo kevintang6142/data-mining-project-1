@@ -75,6 +75,12 @@ Then, loop over lrs and find the coefficient weights matrix, bias, along with ms
 % • Scaling and The Optimal Solution
 % Include any relevant figures/tables/charts.
 
+Chart here from assets/unscaled vs scaled
+
+Feature scaling (normalization by z-score) allowed the weights of the model to converge more quickly. Because the values in general are smaller than without scaling, we tested a higher-valued set of learning rates. When we used the smaller learning rates we had to use for unnormalized data, the model did not learn at a sufficient pace or converge. Also, scaling brings the values from different features closer to each other, so training using scaled features becomes smoother as well, as shown in the above chart. Overall, we find that our algorithm performs better on the test set (lower MSE and higher R2) when we scale the features.
+
+A linear transformation does not meaningfully change the optimal mathematical solution. Although the weights are different for a scaled model, the output of the scaled model on scaled inputs is identical to the output of the unscaled model on unscaled inputs.  We can see that the MSE on the test set for both a scaled and unscaled model are identical, at 141.25799330049728 and 0.35125143823506555 respectively.
+
 \section{Linear vs. Non-Linear Feature Transformations}
 
 % Page target: ~1 page, excluding code blocks, tables, and figures
