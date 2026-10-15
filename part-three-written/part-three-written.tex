@@ -42,13 +42,12 @@ Then, the gradient equation used for parameter updates for step $i$ can be calcu
 \[\frac{\delta MSE}{\delta m} = \frac{-2}{n} \sum_{i=1}^{n}(y_i - (mx_i + b))\]
 
 \begin{algorithm}
-    \caption{Gradient Descent}
+    \caption{Custom Gradient Descent Function}
     \label{alg:gradient-descent}
     \begin{algorithmic}
-        \Procedure{Gradient Descent}{$X, y, \eta, N$}
-            \State Initialize $W^{0}, b^{0}$
+        \Procedure{Gradient Descent}{$W^{0}, b^{0}, X, y, \eta, N$}
             \For{$i = 0$ to $N$}
-                \State $\text{err} = f(X, W, b) - y$
+                \State $\text{err} = f(X, W^{i}, b^{i}) - y$
                 \State $W^{i+1} = W^{i} - \eta \cdot \dfrac{2}{|X|} X^{\top} \text{err}$
                 \State $b^{i+1} = b^{i} - \eta \cdot 2\,\overline{\text{err}}$
             \EndFor
