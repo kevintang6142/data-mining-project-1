@@ -115,7 +115,7 @@ As shown in Table \ref{tab:unscaled_vs_s_fsgd}, scaling does not meaningfully ch
 % Summarize your approach and results of the Part 1 analysis: Non-Linear Transformations
 % Include any relevant figures/tables/charts.
 
-A logarithmic transformation, $\log(x+1)$, was applied to the base feature matrix and a new multivariate model was trained on the custom gradient descent implementation.
+A logarithmic transformation, $\log(x+1)$, was applied to the base feature matrix for the training and test splits and a new multivariate model was trained on the custom gradient descent implementation.
 
 \begin{figure}[h]
     \centering
@@ -123,11 +123,24 @@ A logarithmic transformation, $\log(x+1)$, was applied to the base feature matri
     \caption{The logarithmically transformed multivariate model and its MSE and $R^2$.}\label{fig:log_mv}
 \end{figure}
 
-The log transformation increases convergence speed and stability greatly over the unscaled features as shown in Figure \ref{fig:log_mv}. We were able to use much higher learning rates without the model diverging. This is expected, because similarly to the z-score scaling, it brings the distribution of all the features closer to one another by bringing down extremely large values so that gradient descent proceeds more smoothly.
+The log (non-linear) transformation increases convergence speed and stability greatly over the base features as shown in Figure \ref{fig:log_mv}. As such, we were able to use much higher learning rates without the model diverging. By compressing large values from the base features via the transformation, it reduces the influence and presence of outliers, so that gradient descent can proceed much more smoothly. 
 
-% table here from assets/nonlinear table
+\begin{table}[h]
+    \centering
+    \begin{tabular}{cccc}
+        \toprule
+        & \textbf{Untransformed} & \textbf{Standardized} & \textbf{Log-Transformed} \\
+        \midrule
+        Training MSE & 104.154 & 104.154 & 55.831 \\
+        Testing MSE & 141.258 & 141.258 & 54.520 \\
+        Training $R^2$ & 0.624 & 0.624 & 0.799 \\
+        Testing $R^2$ & 0.351 & 0.351 & 0.750 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Comparison of an untransformed, standardized, and log-transformed multivariate model.}\label{tab:untransformed_vs_standardized_vs_log_transformed}
+\end{table}
 
-While the untransformed and normalized models perform the same on the testing and training sets, the log transform, which is nonlinear, improved the optimal solution and overall predictive performance. This is because the log transformation helps with features that don't have a linear relationship with the target feature, as well as making right-skewed distributions more normal by stretching out low-valued data and compressing high-valued data, which reduces heteroscedasticity.
+As shown in Table \ref{tab:untransformed_vs_standardized_vs_log_transformed}, while the untransformed and normalized models perform the same on the testing and training sets, the log (non-linear) transform improved the optimal solution and overall predictive performance. This is because the log transformation helps with features that don't have a linear relationship with the target feature, as well as making right-skewed distributions more normal by stretching out low-valued data and compressing high-valued data, which reduces heteroscedasticity.
 
 \section{Univariate vs. Multivariate Model Dyanamics}
 
@@ -136,7 +149,9 @@ While the untransformed and normalized models perform the same on the testing an
 % Coefficients
 % Include any relevant figures/tables/charts.
 
-The easiest model to train was Concrete, as it quickly converged to a positive R2 during training with the learning rates we tested. The most difficult models were Superplasticizer, Coarse Aggregate, and Fine Aggregate, which we were unable to get to converge properly at the learning rates that worked, and if we increased the learning rates too much, the model diverged and gave us an overflow error/nan.
+We trained eight seperate univariate models in the structure of $y = m_{i}x_{i} + b$ for every untransformed predictor until we achieved a positive $R^2$ value for two of the eight models.
+
+The easiest model to train was Concrete, as it quickly converged to a positive $R^2$ during training with the learning rates we tested. The most difficult models were Superplasticizer, Coarse Aggregate, and Fine Aggregate, which we were unable to get to converge properly at the learning rates that worked, and if we increased the learning rates too much, the model diverged and output an overflow error or NaN.
 
 % assets/coeff table here
 
