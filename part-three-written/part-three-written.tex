@@ -24,6 +24,8 @@
 \begin{document}
 \maketitle
 
+\newpage
+
 \section{Algorithmic Design and Implementation Details}
 
 % Page target: ~0.5 - 1 page, excluding code blocks, tables, and figures
@@ -68,6 +70,8 @@ We set a list of learning rates for $\alpha$ = [1e-9, 1e-8, 1e-7], initial coeff
 
 Then, loop over lrs and find the coefficient weights matrix, bias, along with mse and r2 over time as requested.
 
+\newpage
+
 \section{Feature Scaling and Gradient Descent Dynamics}
 
 % Page target: ~1 page, excluding code blocks, tables, and figures
@@ -109,6 +113,8 @@ Finally, we used sklearn to find the optimal solution for an unscaled multivaria
 
 As shown in Table \ref{tab:unscaled_vs_s_fsgd}, scaling does not meaningfully change the optimal mathematical solution. Although the weight values are different for a scaled model, the output of the scaled model on scaled inputs is identical to the output of the unscaled model on unscaled inputs. We observe that the MSE and $R^2$ on the test set for both a scaled and unscaled model are identical, at 141.258 and 0.351 respectively.
 
+\newpage
+
 \section{Linear vs. Non-Linear Feature Transformations}
 
 % Page target: ~1 page, excluding code blocks, tables, and figures
@@ -141,6 +147,8 @@ The log (non-linear) transformation increases convergence speed and stability gr
 \end{table}
 
 As shown in Table \ref{tab:untransformed_vs_standardized_vs_log_transformed}, while the untransformed and normalized models perform the same on the testing and training sets, the log (non-linear) transform improved the optimal solution and overall predictive performance. This is because the log transformation helps with features that don't have a linear relationship with the target feature, as well as making right-skewed distributions more normal by stretching out low-valued data and compressing high-valued data, which reduces heteroscedasticity.
+
+\newpage
 
 \section{Univariate vs. Multivariate Model Dyanamics}
 
@@ -176,17 +184,23 @@ We use sklearn to find the optimal solution for each of the univariate models, a
 
 We also observe that the univariate coefficients are not equal to the multivariate coefficients because some features in our dataset may correlate with one another. Therefore, when training the univariate model for a single feature such as Fly Ash, the single coefficient will also account for the effects of all other features that are correlated to Fly Ash, which is omitted variable bias. When we train the multivariate model however, weights will be assigned based on only the contribution of that feature to achieve the lowest possible error, since the overall model now includes all features, eliminating omitted variable bias.
 
+\newpage
+
 \section{Statistical Inference and Regression Analysis}
 
 % Page target: ~1 page, excluding code blocks, tables, and figures
 % Summarize your approach and results of the Part 1 analysis: Statistical Significance (p-
 % values)
 
+We use statsmodels.api.OLS to extract p-values for all eight features in the dataset across multiple models. This is implemented with untransformed features, standardized features, and log-transformed features, where each has an added constant term. The added constant term is necessary due to the fact that statsmodels.api.OLS does not include an intercept by default. Omitting the constant assumes the regression line formed by OLS passes through zero, which incorrectly changes the estimates for each of the features, and so the constant is needed.
+
 % /assets p vals table
 
-There are trends between which predictors are important, and which univariate models were easier to train? For example, a lower p-value meant the univariate model corresponding to that feature was easier to train. We found that Cement was the univariate models that converged the most quickly and smoothly, agreeing with its small p-values, while we had some more trouble getting Superplasticizer, Coarse Aggregate, and Fine Aggregate to converge properly at the learning rates we tried, which makes sense, looking at their relatively large p-values.
+There are trends between which predictors are important, and which univariate models were easier to train, as shown in Table \ref{}. For example, a lower p-value meant the univariate model corresponding to that feature was easier to train. We found that Cement was the univariate models that converged the most quickly and smoothly, agreeing with its small p-values, while we had some more trouble getting Superplasticizer, Coarse Aggregate, and Fine Aggregate to converge properly at the learning rates we tried, which makes sense, looking at their relatively large p-values.
 
 We observe log transformation changes the p-values significantly, while the p-values of the normalized model are exactly the same as without feature scaling. This is because normalization is a linear transformation, so it will not affect the underlying shape of the distribution of any of the features, and the t-statistic remains the same as before mathematically. However, with log scaling, it is not linear, and the shapes of the distributions are not preserved so the p-value can change, decreasing especially in instances where the original data was not linear/skewed and made more linear by the transformation.
+
+\newpage
 
 \section{Code and Reproducibility Access}
 
