@@ -37,7 +37,7 @@
 % Detail your software environment, dependencies (e.g., Python 3.x, NumPy, pandas,
 % statsmodels), and exact dataset partition steps (900 train / 130 test split).
 
-The objective function is Mean Squared Error (MSE), defined as $MSE = \frac{1}{n} \sum_{i=1}^{n}(y_i - \hat y_i)^2$.
+The objective function for this project was Mean Squared Error (MSE), defined as $MSE = \frac{1}{n} \sum_{i=1}^{n}(y_i - \hat y_i)^2$.
 
 Then, the gradient equation used for parameter updates for step $i$ can be calculated as:
 
@@ -45,7 +45,7 @@ Then, the gradient equation used for parameter updates for step $i$ can be calcu
 \[\frac{\delta MSE}{\delta m} = \frac{-2}{n} \sum_{i=1}^{n}(y_i - (mx_i + b))\]
 
 \begin{algorithm}
-    \caption{Custom Gradient Descent Function}
+    \caption{Custom Gradient Descent Implementation}
     \label{alg:gradient-descent}
     \begin{algorithmic}
         \Procedure{Gradient Descent}{$W^{0}, b^{0}, X, y, \eta, N$}
@@ -59,16 +59,10 @@ Then, the gradient equation used for parameter updates for step $i$ can be calcu
     \end{algorithmic}
 \end{algorithm}
 
-Our dependencies were:
+To implement this, first, we designated rows 501–630 as the testing set (130 samples) and the remaining 900
+samples as the training set, and split into a features matrix and output vector for each set. Model parameters were never updated based on the test dataset. We then set a list of learning rates for the base gradient descent implementation as $\alpha$ = [1e-9, 1e-8, 1e-7], initial coefficient weights matrix to be all zeroes, initial bias to be zero, and iterations to be 1000. In terms of the algorithm's stopping criterion, our implementation automatically stops after $i=1000$ completes, or in other words finishes its 1000th iteration. The solution efficiently calculates the required values of the coefficient weights matrix, the bias, MSE, and $R^2$ by looping over our learning rates.
 
-ucimlrepo 0.0.7, pandas 3.0.5, matplotlib 3.11.2, numpy 2.5.3, scikit-learn 1.9.1, statsmodels 0.15.0, python 3.12
-                    
-We designated rows 501–630 as the testing set (130 samples) and the remaining 900
-samples as the training set, and split into a features matrix and output vector for each set. Model parameters were not updated based on the test dataset.
-
-We set a list of learning rates for $\alpha$ = [1e-9, 1e-8, 1e-7], initial coefficient weights matrix to be all zeroes, initial bias to be zero, and iterations to be 1000. We stop the algorithm after i=1000 completes.
-
-Then, loop over lrs and find the coefficient weights matrix, bias, along with mse and r2 over time as requested.
+Our dependencies for our project were `ucimlrepo==0.0.7', `pandas==3.0.5', `matplotlib==3.11.2', `numpy==2.5.3', `scikit-learn==1.9.1', `statsmodels==0.15.0', and `python==3.12'. All dependencies are pinned and can be installed via `uv' as described in the last section of this report.
 
 \newpage
 
@@ -228,6 +222,6 @@ Interestingly, we observe log transformation changes the p-values significantly,
 
 The repository containing all of our implementation can be found at \href{https://github.com/kevintang6142/data-mining-project-1/tree/main}{this GitHub repository}, which should be public and cloneable.
 
-To run the implementation, please install `uv' locally and run the command `uv sync', which will locally pull all dependencies for the project. Next, you must be in the created virtual environment, which can be activated via `source .venv/bin/activate'. Then, click `run all cells' within the `main.ipynb' file to run all code. Nothing else is required.
+To run the implementation, please install `uv' locally and run the command `uv sync', which will locally install all dependencies for the project into a virtual environment. Next, you must be in the created virtual environment to run any of the code, which can be activated via `source .venv/bin/activate'. Then, click `run all cells' within the `main.ipynb' file to run all code. Nothing else is required.
 
 \end{document}
