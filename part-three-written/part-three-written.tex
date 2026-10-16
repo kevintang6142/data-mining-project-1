@@ -149,15 +149,32 @@ As shown in Table \ref{tab:untransformed_vs_standardized_vs_log_transformed}, wh
 % Coefficients
 % Include any relevant figures/tables/charts.
 
-We trained eight seperate univariate models in the structure of $y = m_{i}x_{i} + b$ for every untransformed predictor until we achieved a positive $R^2$ value for two of the eight models.
+We trained eight seperate univariate models in the structure of $y = m_{i}x_{i} + b$ for every untransformed predictor until we achieved a positive $R^2$ value for two of the eight models. This was accomplished by looping over each feature in the set of features, partitioning the feature matrix into the train and test splits for the given feature, and then running our custom gradient descent function. We used initial weights of zero, initial bias of zero, a cap on iterations being 10,000, and a list of learning rates for $\alpha$ = [1e-7, 1e-6, 1e-5], and plotted the MSE and $R^2$ for each univariate model.
 
-The easiest model to train was Concrete, as it quickly converged to a positive $R^2$ during training with the learning rates we tested. The most difficult models were Superplasticizer, Coarse Aggregate, and Fine Aggregate, which we were unable to get to converge properly at the learning rates that worked, and if we increased the learning rates too much, the model diverged and output an overflow error or NaN.
+The easiest models to train were for all mix types, as they quickly converged to a positive $R^2$ during training with the learning rates we tested. The most difficult models were Superplasticizer, Coarse Aggregate, and Fine Aggregate, which we were unable to get to converge properly at our used learning rates, and if we increased the learning rates too much, the model diverged and output an overflow error or NaN.
 
-% assets/coeff table here
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        & \textbf{Univariate Coefficient} & \textbf{Multivariate Coefficient} \\
+        \midrule
+        Cement & 0.133 & 0.081 \\
+        Blast Furnace Slag & 0.125 & 0.031 \\
+        Fly Ash & 0.107  & -0.053 \\
+        Water & -0.133 & -0.206 \\
+        Superplasticizer & 0.116 & 0.883 \\
+        Coarse Aggregate & 0.029 & -0.027 \\
+        Fine Aggregate & 0.034 & -0.031 \\
+        Age & 0.119 & 0.095 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Comparison of coefficients from univariate models to a multivariate model.}\label{tab:coeff}
+\end{table}
 
-The coefficients for the models involving individual features are different from the corresponding coefficient in the multivariate model. For example, perhaps the largest differences are that Fly Ash, Coarse Aggregate, and Fine Aggregate have a positive correlation with the target feature in the multivariate model while they have a negative correlation in their respective univariate models.
+We use sklearn to find the optimal solution for each of the univariate models, and compare the individual coefficients from these univariate models to the corresponding feature weights found previously via sklearn for the optimal untransformed multivariate model. We observe in Table \ref{tab:coeff} that the coefficients for the models involving individual features are different from the corresponding coefficient in the multivariate model. For example, perhaps the largest differences are that Fly Ash, Coarse Aggregate, and Fine Aggregate have a positive correlation with the target feature in the multivariate model while they have a negative correlation in their respective univariate models.
 
-Univariate coefficients are not equal to multivariate coefficients because some features in our dataset may correlate with one another. Therefore, when training the univariate model for a single feature such as Fly Ash, the single coefficient will also account for the effects of all other features that are correlated to Fly Ash, which is omitted variable bias. When we train the multivariate model however, weights will be assigned based on only the contribution of that feature to achieve the lowest possible error, since the overall model now includes all features, eliminating omitted variable bias.
+We also observe that the univariate coefficients are not equal to the multivariate coefficients because some features in our dataset may correlate with one another. Therefore, when training the univariate model for a single feature such as Fly Ash, the single coefficient will also account for the effects of all other features that are correlated to Fly Ash, which is omitted variable bias. When we train the multivariate model however, weights will be assigned based on only the contribution of that feature to achieve the lowest possible error, since the overall model now includes all features, eliminating omitted variable bias.
 
 \section{Statistical Inference and Regression Analysis}
 
