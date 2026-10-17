@@ -37,9 +37,9 @@
 % Detail your software environment, dependencies (e.g., Python 3.x, NumPy, pandas,
 % statsmodels), and exact dataset partition steps (900 train / 130 test split).
 
-The objective function for this project was Mean Squared Error (MSE), defined as $MSE = \frac{1}{n} \sum_{i=1}^{n}(y_i - \hat y_i)^2$.
+The objective function for our implementatio was the Mean Squared Error (MSE) function, which is defined as $MSE = \frac{1}{n} \sum_{i=1}^{n}(y_i - \hat y_i)^2$.
 
-Then, the gradient equation used for parameter updates for step $i$ can be calculated as:
+Then, the gradient equation used for parameter updates for iteration $i$ can be calculated with the following:
 
 \[w^{i+1} = w^{i} - \alpha \frac{\delta MSE}{\delta m}\]
 \[\frac{\delta MSE}{\delta m} = \frac{-2}{n} \sum_{i=1}^{n}(y_i - (mx_i + b))\]
@@ -59,10 +59,12 @@ Then, the gradient equation used for parameter updates for step $i$ can be calcu
     \end{algorithmic}
 \end{algorithm}
 
-To implement this, first, we designated rows 501–630 as the testing set (130 samples) and the remaining 900
+To support the implementation of Algorithm \ref{alg:gradient-descent}, we first designated rows 501–630 as the testing set (130 samples) and the remaining 900
 samples as the training set, and split into a features matrix and output vector for each set. Model parameters were never updated based on the test dataset. We then set a list of learning rates for the base gradient descent implementation as $\alpha$ = [1e-9, 1e-8, 1e-7], initial coefficient weights matrix to be all zeroes, initial bias to be zero, and iterations to be 1000. In terms of the algorithm's stopping criterion, our implementation automatically stops after $i=1000$ completes, or in other words finishes its 1000th iteration. The solution efficiently calculates the required values of the coefficient weights matrix, the bias, MSE, and $R^2$ by looping over our learning rates.
 
-Our dependencies for our project were `ucimlrepo==0.0.7', `pandas==3.0.5', `matplotlib==3.11.2', `numpy==2.5.3', `scikit-learn==1.9.1', `statsmodels==0.15.0', and `python==3.12'. All dependencies are pinned and can be installed via `uv' as described in the last section of this report.
+The selection of learning rates $\alpha$ = [1e-9, 1e-8, 1e-7] was motivated by the scale of the feature matrix and our need to observe stable convergence behavior of the required curves for the project. Because the input features were not explicitly standardized prior to training, smaller learning rates were necessary to prevent the gradient updates from overshooting the minimum. Running the model for $i=1000$ iterations across all learning rates ensures a fair comparison between them, as each learning rate tested was used for the same amount of training. The decision to avoid early stopping based on a thresholded value allowed us to observe full curves for each learning rate, which provided insight into the entire stability of the optimization rather than its final result.
+
+To ensure full reproducibility of our results, all dependencies were pinned to specific versions and managed through `uv'. Our dependencies for our project were `ucimlrepo==0.0.7', `pandas==3.0.5', `matplotlib==3.11.2', `numpy==2.5.3', `scikit-learn==1.9.1', `statsmodels==0.15.0', and `python==3.12'. All dependencies are pinned and can be installed via `uv' as described in the last section of this report. This approach eliminated any ambiguity over package versions, and allowed us to further ensure that our results remain consistent across runs. The installation procedure via uv is documented in the final section of this report.
 
 \newpage
 
@@ -74,7 +76,7 @@ Our dependencies for our project were `ucimlrepo==0.0.7', `pandas==3.0.5', `matp
 % • Scaling and The Optimal Solution
 % Include any relevant figures/tables/charts.
 
-The two implementations for the unscaled and scaled features for the multivariate model used the same features, the same train/test split, the same zero-initialized weights, the same 1000 iterations, and the same gradient descent functions. In the implementation for the unscaled features multivariate model, raw features are used directly, and since their magnitudes vary quite wildly, the loss surface becomes quite sharp. As such, we chose to use extremely tiny learning rates ($1e-9$ to $1e-7$) so that the curve would converge. In the implementation for the scaled features multivariate model, the features matrix is standardized using the training set's mean and standard deviation, which makes the loss function much smoother. As a result, we use much larger learning rates ($1e-4$ to $1e-2$) which lead to convergence of gradient descent more smoothly.
+The two implementations for the unscaled and scaled features for the multivariate model used the same features, the same train/test split, the same zero-initialized weights, the same 1000 iterations, and the same gradient descent functions. In the implementation for the unscaled features multivariate model, raw features are used directly, and since their magnitudes vary quite wildly, the loss surface becomes quite sharp. As such, we chose to use extremely tiny learning rates for the base implementation from $\alpha = 1e-9$ to $\alpha = 1e-7$ so that the curve would ultimately converge. In the implementation for the scaled features multivariate model, the features matrix is standardized using the training set's mean and standard deviation, which makes the loss function much smoother. As a result, we use much larger learning rates from $\alpha 1e-4$ to $\alpha = 1e-2$ which lead to convergence of gradient descent much more smoothly.
 
 \begin{figure}[h]
     \centering
@@ -88,9 +90,9 @@ The two implementations for the unscaled and scaled features for the multivariat
     \caption{The scaled multivariate model and its MSE and $R^2$.}\label{fig:scaled_fsgd}
 \end{figure}
 
-Comparing Figure \ref{fig:unscaled_fsgd} and Figure \ref{fig:scaled_fsgd}, we find that our algorithm performs better on the test set (lower MSE and a higher $R^2$) when we scale the features compared to when we do not scale the features.
+Comparing Figure \ref{fig:unscaled_fsgd} and Figure \ref{fig:scaled_fsgd}, we find that our algorithm performs better on the test set (lower MSE and a higher $R^2$) when we scale or standardize the features compared to when we do not scale or standardized the features.
 
-Finally, we used sklearn to find the optimal solution for an unscaled multivariate model and a scaled multivariate model. This was implemented by fitting two sklearn LinearRegression models, with one on the unscaled training feature matrix, and the other on the scaled training feature matrix, and calculating MSE and $R^2$ for both.
+Finally, we used `sklearn' to find the optimal solution for an unscaled multivariate model and a scaled multivariate model. This was implemented by fitting two `sklearn' LinearRegression models, with one on the unscaled training feature matrix, and the other on the scaled training feature matrix, and calculating MSE and $R^2$ for both.
 
 \begin{table}[h]
     \centering
@@ -105,7 +107,9 @@ Finally, we used sklearn to find the optimal solution for an unscaled multivaria
     \caption{Comparison of a sklearn unscaled multivariate model with a sklearn scaled multivariate model.}\label{tab:unscaled_vs_s_fsgd}
 \end{table}
 
-As shown in Table \ref{tab:unscaled_vs_s_fsgd}, scaling does not meaningfully change the optimal mathematical solution. Although the weight values are different for a scaled model, the output of the scaled model on scaled inputs is identical to the output of the unscaled model on unscaled inputs. We observe that the MSE and $R^2$ on the test set for both a scaled and unscaled model are identical, at 141.258 and 0.351 respectively.
+As shown in Table \ref{tab:unscaled_vs_s_fsgd}, scaling does not meaningfully change the optimal mathematical solution. Although the weight values are different for a scaled model, the output of the scaled model on scaled inputs is identical to the output of the unscaled model on unscaled inputs. We observe that the MSE and $R^2$ on the test set for both a scaled and unscaled model are exactly identical, at 141.258 and 0.351 respectively.
+
+It is worth mentioning that the identical MSE and $R^2$ values produced by the optimal `sklearn` models in Table \ref{tab:unscaled_vs_s_fsgd} use the closed-form Ordinary Least Squares (OLS) solution, so they will always compute the exact solution regardless of feature scaling. On the other hand, our custom gradient descent implementation iteratively optimizes the solution based on values such as the learning rate, the initial states of values, and number of iterations. Therefore, this contrast shows the limitations of the iterative process implemented by our group when compared to the optimal closed-form OLS solution implemented by `sklearn'.
 
 \newpage
 
@@ -115,7 +119,7 @@ As shown in Table \ref{tab:unscaled_vs_s_fsgd}, scaling does not meaningfully ch
 % Summarize your approach and results of the Part 1 analysis: Non-Linear Transformations
 % Include any relevant figures/tables/charts.
 
-A logarithmic transformation, $\log(x+1)$, was applied to the base feature matrix for the training and test splits and a new multivariate model was trained on the custom gradient descent implementation.
+A logarithmic transformation, $\log(x+1)$, was applied to the base feature matrix for the training and test splits and a new multivariate model was trained on the custom gradient descent implementation. Again, we initialized our feature weights to initially be zero, our bias to be zero, and our iterations to $i = 1000$.
 
 \begin{figure}[h]
     \centering
@@ -123,7 +127,7 @@ A logarithmic transformation, $\log(x+1)$, was applied to the base feature matri
     \caption{The logarithmically transformed multivariate model and its MSE and $R^2$.}\label{fig:log_mv}
 \end{figure}
 
-The log (non-linear) transformation increases convergence speed and stability greatly over the base features as shown in Figure \ref{fig:log_mv}. As such, we were able to use much higher learning rates without the model diverging. By compressing large values from the base features via the transformation, it reduces the influence and presence of outliers, so that gradient descent can proceed much more smoothly. 
+The log (non-linear) transformation increases convergence speed and stability greatly over the base features as shown in Figure \ref{fig:log_mv}. As such, we were able to use much higher learning rates from $\alpha = 1e-5$ to $\alpha = 1e-3$ without the model diverging. By compressing large values from the base features via the transformation, it reduces the influence and presence of outliers, so that gradient descent can proceed much more smoothly. 
 
 \begin{table}[h]
     \centering
@@ -141,6 +145,10 @@ The log (non-linear) transformation increases convergence speed and stability gr
 \end{table}
 
 As shown in Table \ref{tab:untransformed_vs_standardized_vs_log_transformed}, while the untransformed and normalized models perform the same on the testing and training sets, the log (non-linear) transform improved the optimal solution and overall predictive performance. This is because the log transformation helps with features that don't have a linear relationship with the target feature, as well as making right-skewed distributions more normal by stretching out low-valued data and compressing high-valued data, which reduces heteroscedasticity.
+
+The logarithmic transformation improves performance in this specific experiment by first compressing the values of the features, as discussed previously, which is similar to the effect of standardization, and allows for an increase in values for our tested learning rates. The logarithmic transformation also changes the relationship between the features and the target value in our dataset. Because we observe this transformation improves our results, we may conclude that the linear relationship is too simple and cannot capture the complex relationships between our features as accurately. This is shown in Table \ref{tab:untransformed_vs_standardized_vs_log_transformed}, with the drop in both Training MSE and Testing MSE for the Log-Transformed multivariate model compared to the Untransformed and Standardized multivariate models. The table also shows the improvement on $R^2$ for the Log-Transformed multivariate model over both linear multivariate models, which explains why the logarithmic transformation may be able to capture more complex relationships derived from the data.
+
+Another observation from Table \ref{tab:untransformed_vs_standardized_vs_log_transformed} relates to the gap between training and testing performance. Both the linear models have a Training $R^2$ of 0.624 and Testing $R^2$ of 0.351, which is a decrease of about 0.27. On the other hand, the Log-Transformed model has a Training $R^2$ of 0.799 and Testing $R^2$ of 0.750, which is a significantly smaller decrease. Comparing the drop between the Training $R^2$ and Testing $R^2$ for both types of models, we observe that the drop for the linear models is significantly greater than that of the Log-Transformed model. This may suggest that applying the logarithmic transformation not just better optimizes the loss function of MSE on both splits, but also is more generalizable to data it was trained on and data it has never seen due to the relatively high scores for both $R^2$ values.
 
 \newpage
 
@@ -178,6 +186,8 @@ We use sklearn to find the optimal solution for each of the univariate models, a
 
 We also observe that the univariate coefficients are not equal to the multivariate coefficients because some features in our dataset may correlate with one another. Therefore, when training the univariate model for a single feature such as Fly Ash, the single coefficient will also account for the effects of all other features that are correlated to Fly Ash, which is omitted variable bias. When we train the multivariate model however, weights will be assigned based on only the contribution of that feature to achieve the lowest possible error, since the overall model now includes all features, eliminating omitted variable bias.
 
+Following the discussion on the univariate coefficients, we may conclude that univerate coefficients should never be interpreted solely as ways to measure a feature's true effect on the target value. This is due to the fact that each univariate model for this dataset omits the other seven variables used to generate a target value. For example, consider Fly Ash, Coarse Aggregate, and Fine Aggregate, which are features that have sign-flipping values between the univariate and multivariate coefficient results. A simple analysis of only the univariate results may suggest that these features are negatively associated with the target value, whereas the multivariate model provides positive association values for these features (when taking all features into account).
+
 \newpage
 
 \section{Statistical Inference and Regression Analysis}
@@ -196,12 +206,12 @@ We use statsmodels.api.OLS to extract p-values for all eight features in the dat
         \midrule
         Cement & 6.971e-41 & 6.971e-41 & 1.299e-86 \\
         Blast Furnace Slag & 4.145e-26 & 4.145e-26 & 4.519e-36 \\
-        Fly Ash $R^2$ & 1.895e-13 & 1.895e-13 & 2.605e-01 \\
-        Water $R^2$ & 1.918e-03 & 1.918e-03 & 1.863e-20 \\
-        Superplasticizer $R^2$ & 2.461e-01 & 2.461e-01 & 1.040e-05 \\
-        Coarse Aggregate $R^2$ & 5.443e-03 & 5.443e-03 & 4.079e-01 \\
-        Fine Aggregate $R^2$ & 2.738e-03 & 2.738e-03 & 9.477e-02 \\
-        Age $R^2$ & 9.516e-74 & 9.516e-74 & 1.747e-192 \\
+        Fly Ash & 1.895e-13 & 1.895e-13 & 2.605e-01 \\
+        Water & 1.918e-03 & 1.918e-03 & 1.863e-20 \\
+        Superplasticizer & 2.461e-01 & 2.461e-01 & 1.040e-05 \\
+        Coarse Aggregate & 5.443e-03 & 5.443e-03 & 4.079e-01 \\
+        Fine Aggregate & 2.738e-03 & 2.738e-03 & 9.477e-02 \\
+        Age & 9.516e-74 & 9.516e-74 & 1.747e-192 \\
         \bottomrule
     \end{tabular}
     \caption{Comparison of feature p-values for an untransformed, standardized, and log-transformed multivariate model.}\label{tab:untransformed_vs_standardized_vs_log_transformed_p_feat}
@@ -210,6 +220,10 @@ We use statsmodels.api.OLS to extract p-values for all eight features in the dat
 There are trends between which predictors are important, and which univariate models were easier to train, as shown in Table \ref{tab:untransformed_vs_standardized_vs_log_transformed_p_feat}. For example, a lower p-value meant the univariate model corresponding to that feature was easier to train. We found that the Cement mix type was the univariate model that converged the most quickly and smoothly, agreeing with its small p-values, while we had some more trouble getting Superplasticizer, Coarse Aggregate, and Fine Aggregate to converge properly at the learning rates we tried, which makes sense, looking at their relatively large p-values.
 
 Interestingly, we observe log transformation changes the p-values significantly, while the p-values of the normalized model are exactly the same as without feature scaling. This is because normalization is a linear transformation, so it will not affect the underlying shape of the distribution of any of the features, and the t-statistic remains the same as before mathematically. However, with log scaling, it is not linear, and the shapes of the distributions are not preserved so the p-value can change, decreasing especially in instances where the original data was not linear/skewed and made more linear by the transformation.
+
+Specifically, Cement, Blast Furnace Slag, Water, Superplasticizer, and Age all increased substantially in significance under the log transform due to the decrease in values. For example, in Table \ref{tab:untransformed_vs_standardized_vs_log_transformed_p_feat}, Age under the linear models has a p-value of 9.516e-74, compared to Age under the log transform with a p-value of 1.747e-192. On the other hand, Fly Ash, Coarse Aggregate, and Fine Aggregate all decreased substantially in significance under the log transform due to the increase in values. For example, in Table \ref{tab:untransformed_vs_standardized_vs_log_transformed_p_feat}, Fly Ash under the linear models has a p-value of 1.895e-13, whereas the Fly Ash under the log transform has a p-value of 2.605e-01. It may be that because the linear models' values are so spread apart, applying the log transformation may cause certain features to lose significance once influential outliers are compressed by the transformation. This may explain the change in our features from the linear models' values to the log transformed values.
+
+As we observed in a previous section, the logarithmic transformed multivariate model performed the best on both the training and test sets. Observing values for the log transform in Table \ref{tab:untransformed_vs_standardized_vs_log_transformed_p_feat}, we conclude that Fly Ash and Coarse Aggregate are no longer considered significant under the 0.05 threshold. The features that remain significant at the default 0.05 threshold for the log-transformed model are Cement, Blast Furnace Slag, Water, Superplasticizer, Fine Aggregate, and Age. Finally, the features that remain significant at the default 0.05 threshold across all models are Cement, Blast Furnace Slag, Water, and Age, which indicates that these features heavily contribute to the prediction of the target variable, regardless of the model used.
 
 \newpage
 
