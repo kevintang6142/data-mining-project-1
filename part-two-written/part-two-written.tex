@@ -31,17 +31,19 @@
 
 \section{Executive Summary}
 
-Our analysis looked at concrete ingredients, specifically how their curing time relates to compressive strength. This was so that we could help make more informed design and production decisions. With 1030 concrete samples, we used 900 for our training dataset and 130 for our testing set. We used 8 predictors to account for different ingredient mixes and environmental factors.
+Our analysis looked at concrete ingredients, and how they relate to compressive strength. The purpose of the analysis was so that we could help make more informed design and production decisions for choosing ingredients to maximize concrete strength. With 1030 concrete samples, we used 900 to train our models and 130 to test our models. We used 8 input variables related to the concrete and its ingredients to account for different ingredient mixes and environmental factors.
 
-Our best model explained roughly 75\% of the variation of concrete strength in the testing data (in comparison, the original model explained like 35\%). It performed even better on the testing samples, explaining about 80\% of the variation.
+Our best model explained roughly 75\% of the variation of concrete strength in the testing data (in comparison, the original model explained roughly 35\%). Our best model performed even better on the testing samples, explaining about 80\% of the variation.
 
-Overall, concrete strength correlated with multiple features, including cement, water, blast furnace slag and curing time. Thus it was a good decision to look at the complete formulation rather than just relying on any singular ingredient. We recommend using our final model to screen new proposed concrete formulations to see if they’re promising enough for physical testing.
+Overall, concrete strength is statistically associated with multiple features under our best model, including Cement, Blast Furnace Slag, Water, Superplasticizer, Fine Aggregate, and Age. However, out of those ingredients, only Cement, Blast Furnace Slag, Superplasticizer, and Age contribute positively to concrete compressive strength. We recommend using our final model to screen new proposed concrete formulations to see if they arre promising enough for physical testing.
 
 \newpage
 
 \section{Problem Context \& Data Overview}
 
-This analysis looks at 8 features of a concrete mix (cement, blast furnace slag, fly ash water, superplasticizer, course aggregate, fine aggregate, age) and looks at how they affect concrete strength, measured by how much pressure it can take before it fails. These relationships let us understand what kinds of mixtures are promising to test, and how they hold up over time.
+This analysis looks at 8 features of a concrete mix (cement, blast furnace slag, fly ash, water, superplasticizer, coarse aggregate, fine aggregate, age) and looks at how they affect concrete strength, measured by how much pressure it can take before it fails. These relationships between these features and the concrete strength let us understand what kinds of concrete formulations are promising to test, and how effective they may be in the real world.
+
+Cement, Blast Furnace Slag, Fly Ash are all concrete binders used in concrete mixes. Water helps lubricate the concrete mix and chemically reacts with the concrete binders to form the binding gel. Superplasticizer helps to reduce water in the concerete mix and create more durable concrete. Aggregates help to fill in the body of the concrete and are what is binded together by the concrete mix. Finally, the curing age represents the time for the chemical reaction of the concrete to complete.
 
 Of our 1030 observations, we used 900 for training. Table~\ref{tab:training-summary} summarizes the ingredient quantities, curing age, and compressive strength in the training dataset.
 
@@ -119,14 +121,14 @@ For practical use, the final model is a useful datapoint for comparing concrete 
 
 One recommendation would be that since the p-values of the Cement and Age features are extremely low across all the different models we tested and their coefficients in the untransformed model are positive, that adding a higher proportion of cement as well as simply waiting longer for the concrete to set is an effective method to increase concrete strength. Another recommendation would be to test mixtures with a higher proportion of blast furnace slag, since its coefficient is positive and its p-value is also consistently low across all models. If slag is cheaper than cement, partial cement replacement could reduce costs, provided strength tests confirm that the mix still meets the required strength. Finally, we tested a variety of water/cement ratios across randomly sampled values of the other features, and found their predicted strength according to our best model. This illustrates that generally, our model predicts that 28-day strength increases with decreased water/cement ratio, so an actionable suggestion would be to decrease the amount of water proportional to cement as long as the mixture still holds and while minimizing costs, in order to maximize the strength of the concrete in the long run.
 
-Figure~\ref{fig:water-cement-strength} shows the predicted 28-day strengths across the sampled water/cement ratios, supporting the recommendation to evaluate mixtures with lower ratios through physical testing.
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{assets/water_cement_28_day.png}
     \caption{Predicted strength at 28 days for different water/cement ratios, using the log-transformed model.}
     \label{fig:water-cement-strength}
 \end{figure}
+
+Figure~\ref{fig:water-cement-strength} shows the predicted 28-day strengths across the sampled water/cement ratios, supporting the recommendation to evaluate mixtures with lower ratios through physical testing.
 
 We acknowledge that there are many potential limitations of our current model. One is the possibility that certain relevant environmental factors are not accounted for, such as temperature or humidity, which could affect concrete strength and cause extra variance that is not able to be accounted for in the training data. A more risk-averse model could be made if more potentially relevant features were tested and evaluated to see if they improve model performance (decided first by consulting with an expert engineer). Our testing of models could also incorporate cross-validation, to ensure that we aren’t overfitting by optimizing for the one specific set of testing data that we initially chose. Also, a linear regression model may not be able to account for all the patterns in the data. This can be mitigated in future model improvements by incorporating nonlinear features, for example a water/cement ratio, or by using nonlinear models such as random forests or polynomial regression.
 
