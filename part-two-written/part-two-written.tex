@@ -1,9 +1,8 @@
 %!TEX program = pdflatex
 
-% Part 2 text is transcribed verbatim from Project 1 Part 2.pdf.
+% Part 2 is based on Project 1 Part 2.pdf, with numbered captions and references.
 % Layout follows part-three-written/part-three-written.tex.
 % Original charts are extracted losslessly, not regenerated.
-% No captions are added because the original does not contain captions.
 \documentclass[12pt,letterpaper]{article}
 
 \usepackage[english]{babel}
@@ -11,6 +10,8 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{float}
+\usepackage[font=small,labelfont=bf]{caption}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{natbib}
 \usepackage{authblk}
@@ -42,9 +43,12 @@ Overall, concrete strength correlated with multiple features, including cement, 
 
 This analysis looks at 8 features of a concrete mix (cement, blast furnace slag, fly ash water, superplasticizer, course aggregate, fine aggregate, age) and looks at how they affect concrete strength, measured by how much pressure it can take before it fails. These relationships let us understand what kinds of mixtures are promising to test, and how they hold up over time.
 
-Of our 1030 observations, we used 900 for training. Below are aggregate statistics collected from the training dataset:
+Of our 1030 observations, we used 900 for training. Table~\ref{tab:training-summary} summarizes the ingredient quantities, curing age, and compressive strength in the training dataset.
 
-\begin{center}
+\begin{table}[H]
+    \centering
+    \caption{Descriptive statistics for the 900 training observations, including all eight predictors and the compressive strength response. Ingredient quantities are measured in kg/m\textsuperscript{3}, age in days, and strength in MPa.}
+    \label{tab:training-summary}
     \begin{tabular}{lrrrr}
         \toprule
         \textbf{Variable} & \textbf{Mean} & \textbf{Standard deviation} & \textbf{Minimum} & \textbf{Maximum} \\
@@ -60,19 +64,25 @@ Of our 1030 observations, we used 900 for training. Below are aggregate statisti
         Compressive strength (MPa) & 36.97 & 16.65 & 2.33 & 82.60 \\
         \bottomrule
     \end{tabular}
-\end{center}
+\end{table}
 
-We also analyzed how individual features correlate with concrete strength. The chart below shows a weak positive correlation between cement content and strength.
+We also analyzed how individual features correlate with concrete strength. Figure~\ref{fig:cement-strength} shows a weak positive correlation between cement content and strength.
 
-\begin{center}
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.75\textwidth]{assets/cement_strength.png}
-\end{center}
+    \caption{Cement content and measured compressive strength of the concrete samples.}
+    \label{fig:cement-strength}
+\end{figure}
 
-Additionally, we looked at the relationship between curing age and concrete strength, but it didn’t seem like there was much of a correlation.
+Additionally, we looked at the relationship between curing age and concrete strength in Figure~\ref{fig:age-strength}, but it didn’t seem like there was much of a correlation.
 
-\begin{center}
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.75\textwidth]{assets/age_strength.png}
-\end{center}
+    \caption{Measured compressive strength of concrete samples at different curing ages.}
+    \label{fig:age-strength}
+\end{figure}
 
 It is clear that there can be drastic variation in strength among concrete mixes of the same cement content or age, showing that one must consider many features holistically in order to more accurately gauge strength.
 
@@ -82,9 +92,12 @@ It is clear that there can be drastic variation in strength among concrete mixes
 
 The final model explained around 80\% of the variation in strength among training samples, and around 75\% of the variation among testing samples. Since it performed similarly across the two groups, we can conclude it learned relationships that remained useful for samples it hadn’t seen during development. However, since the model can’t explain all of the variation in strength, we suggest supplementing its predictions with physical testing.
 
-The final model log-transforms the inputs, which significantly improved performance compared to the original model. We also tried standardizing the inputs, but it did not lead to any change compared to the original. See the results in the below chart.
+The final model log-transforms the inputs, which significantly improved performance compared to the original model. We also tried standardizing the inputs, but it did not lead to any change compared to the original. Table~\ref{tab:model-performance} compares the training and testing performance of all three models.
 
-\begin{center}
+\begin{table}[H]
+    \centering
+    \caption{Linear regression performance with original, standardized, and log-transformed inputs, using 900 training observations and 130 testing observations. Higher $R^2$ and lower testing mean squared error (MSE) indicate better performance.}
+    \label{tab:model-performance}
     \begin{tabular}{lrrr}
         \toprule
         \textbf{Model} & \textbf{Training $R^2$} & \textbf{Testing $R^2$} & \textbf{Testing MSE (MPa\textsuperscript{2})} \\
@@ -94,7 +107,7 @@ The final model log-transforms the inputs, which significantly improved performa
         Log-transformed inputs & 0.799 & 0.750 & 54.52 \\
         \bottomrule
     \end{tabular}
-\end{center}
+\end{table}
 
 The original model provides straightforward relationships between ingredient quantities and predicted strength. For example (holding other predictors constant), an additional 10 kg/m\textsuperscript{3} of cement was associated with around 1.33 MPa higher strength. The log scaled model has more complex relationships, but in this case, that allowed it to have more accurate predictions in general.
 
@@ -106,9 +119,14 @@ For practical use, the final model is a useful datapoint for comparing concrete 
 
 One recommendation would be that since the p-values of the Cement and Age features are extremely low across all the different models we tested and their coefficients in the untransformed model are positive, that adding a higher proportion of cement as well as simply waiting longer for the concrete to set is an effective method to increase concrete strength. Another recommendation would be to test mixtures with a higher proportion of blast furnace slag, since its coefficient is positive and its p-value is also consistently low across all models. If slag is cheaper than cement, partial cement replacement could reduce costs, provided strength tests confirm that the mix still meets the required strength. Finally, we tested a variety of water/cement ratios across randomly sampled values of the other features, and found their predicted strength according to our best model. This illustrates that generally, our model predicts that 28-day strength increases with decreased water/cement ratio, so an actionable suggestion would be to decrease the amount of water proportional to cement as long as the mixture still holds and while minimizing costs, in order to maximize the strength of the concrete in the long run.
 
-\begin{center}
+Figure~\ref{fig:water-cement-strength} shows the predicted 28-day strengths across the sampled water/cement ratios, supporting the recommendation to evaluate mixtures with lower ratios through physical testing.
+
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.75\textwidth]{assets/water_cement_28_day.png}
-\end{center}
+    \caption{Predicted strength at 28 days for different water/cement ratios, using the log-transformed model.}
+    \label{fig:water-cement-strength}
+\end{figure}
 
 We acknowledge that there are many potential limitations of our current model. One is the possibility that certain relevant environmental factors are not accounted for, such as temperature or humidity, which could affect concrete strength and cause extra variance that is not able to be accounted for in the training data. A more risk-averse model could be made if more potentially relevant features were tested and evaluated to see if they improve model performance (decided first by consulting with an expert engineer). Our testing of models could also incorporate cross-validation, to ensure that we aren’t overfitting by optimizing for the one specific set of testing data that we initially chose. Also, a linear regression model may not be able to account for all the patterns in the data. This can be mitigated in future model improvements by incorporating nonlinear features, for example a water/cement ratio, or by using nonlinear models such as random forests or polynomial regression.
 
