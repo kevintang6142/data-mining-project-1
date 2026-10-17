@@ -33,9 +33,9 @@
 
 Our analysis looked at concrete ingredients, and how they relate to compressive strength. The purpose of the analysis was so that we could help make more informed design and production decisions for choosing ingredients to maximize concrete strength. For a buisness, creating concrete with maximized strength may allow for reduction on material costs as not all materials may be needed. Maximizing concrete strength may also lead to better reputation for a buisness, and allow them to sell their products at higher prices. For a government or construction firm, maximizing the strength of concrete may be useful in terms of purchasing strong concrete from a buisness, to improve public infrastructure and reduce the risk of failure for projects.
 
-With 1030 concrete samples, we used 900 to train our models and 130 to test our models. We used 8 input variables related to the concrete and its ingredients to account for different ingredient mixes and environmental factors. Our best model explained roughly 75\% of the variation of concrete strength in the testing data (in comparison, the original model explained roughly 35\%). Our best model performed even better on the testing samples, explaining about 80\% of the variation.
+With 1030 concrete samples, we used 900 to train our models and 130 to test our models. We used 8 input variables related to the concrete and its ingredients to account for different ingredient mixes and environmental factors. Our best model explained roughly 75\% of the variation of concrete strength in the training data (in comparison, the original model explained roughly 35\%). Our best model performed even better on the testing samples, explaining about 80\% of the variation.
 
-Overall, concrete strength is statistically associated with multiple features under our best model, including Cement, Blast Furnace Slag, Water, Superplasticizer, Fine Aggregate, and Age. However, out of those ingredients, only Cement, Blast Furnace Slag, Superplasticizer, and Age contribute positively to concrete compressive strength. We recommend using our final model to screen new proposed concrete formulations to see if they arre promising enough for physical testing. Specifically, we recommend maximizing Cement, Blast Furnace Slag, Superplasticizer, and Age values to provide the maximum compressive strength for concrete.
+Overall, concrete strength is statistically associated with multiple features under our best model, including Cement, Blast Furnace Slag, Water, Superplasticizer, Fine Aggregate, and Age. However, out of those ingredients, only Cement, Blast Furnace Slag, Superplasticizer, and Age contribute positively to concrete compressive strength. We recommend using our final model to screen new proposed concrete formulations to see if they arre promising enough for physical testing. Generally, we recommend trying to increase Cement, Blast Furnace Slag, Superplasticizer, and Age values to provide the maximum compressive strength for a concrete.
 
 \newpage
 
@@ -68,7 +68,7 @@ Of our 1030 observations, we used 900 for training. Table~\ref{tab:training-summ
     \end{tabular}
 \end{table}
 
-We also analyzed how individual features correlate with concrete strength. Figure~\ref{fig:cement-strength} shows a weak positive correlation between cement content and strength.
+We also analyzed how individual features correlate with concrete strength. Figure~\ref{fig:cement-strength} shows a weak positive correlation between cement content and strength. In other words, increasing cement values seems a bit likely to increase strength values. Therefore, increasing cement values in a concrete mixture may lead to a higher compressive strength.
 
 \begin{figure}[H]
     \centering
@@ -77,7 +77,7 @@ We also analyzed how individual features correlate with concrete strength. Figur
     \label{fig:cement-strength}
 \end{figure}
 
-Additionally, we looked at the relationship between curing age and concrete strength in Figure~\ref{fig:age-strength}, but it didn’t seem like there was much of a correlation.
+Second, we looked at the relationship between curing age and concrete strength in Figure~\ref{fig:age-strength}. In this case, it seems that there is a weak positive correlation between age and strength. In other words, increasing age values seems a bit likely to increase strength values. Therefore, increasing age values in a concrete mixture may lead to a higher compressive strength.
 
 \begin{figure}[H]
     \centering
@@ -86,7 +86,7 @@ Additionally, we looked at the relationship between curing age and concrete stre
     \label{fig:age-strength}
 \end{figure}
 
-It is clear that there can be drastic variation in strength among concrete mixes of the same cement content or age, showing that one must consider many features holistically in order to more accurately gauge strength.
+We observe that there can be drastic variation in strength among concrete mixes of the same cement content or age. As such, one must consider many features holistically in order to more accurately gauge concrete strength. Please refer to the final section in this report for recommendations based on our model.
 
 \newpage
 
@@ -94,7 +94,7 @@ It is clear that there can be drastic variation in strength among concrete mixes
 
 The final model explained around 80\% of the variation in strength among training samples, and around 75\% of the variation among testing samples. Since it performed similarly across the two groups, we can conclude it learned relationships that remained useful for samples it hadn’t seen during development. However, since the model can’t explain all of the variation in strength, we suggest supplementing its predictions with physical testing.
 
-The final model log-transforms the inputs, which significantly improved performance compared to the original model. We also tried standardizing the inputs, but it did not lead to any change compared to the original. Table~\ref{tab:model-performance} compares the training and testing performance of all three models.
+The final model log-transforms the inputs, which significantly improved performance compared to the original model. We also tried standardizing the inputs, but it did not lead to any change compared to the original. Table~\ref{tab:model-performance} compares the training and testing performance of all three models we tested, which were based on the original inputs, standardized inputs, and log-transformed inputs.
 
 \begin{table}[H]
     \centering
@@ -113,7 +113,7 @@ The final model log-transforms the inputs, which significantly improved performa
 
 The original model provides straightforward relationships between ingredient quantities and predicted strength. For example (holding other predictors constant), an additional 10 kg/m\textsuperscript{3} of cement was associated with around 1.33 MPa higher strength. The log scaled model has more complex relationships, but in this case, that allowed it to have more accurate predictions in general.
 
-For practical use, the final model is a useful datapoint for comparing concrete formulations. Its testing root mean squared error is around 7.4 MPa, so individual predictions can still vary from the measured strength. Before using predictions to guide operational changes, the organization should do physical trials and compare the results.
+For practical use, the final model is a useful datapoint for comparing concrete formulations. Its testing root mean squared error is around 7.4 MPa, so individual predictions can still vary from the measured strength. Before using predictions to guide operational changes, the organization should do physical trials across many different forms of concrete and compare the results to this report's results.
 
 \newpage
 
