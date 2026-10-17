@@ -31,11 +31,11 @@
 
 \section{Executive Summary}
 
-Our analysis looked at concrete ingredients, and how they relate to compressive strength. The purpose of the analysis was so that we could help make more informed design and production decisions for choosing ingredients to maximize concrete strength. With 1030 concrete samples, we used 900 to train our models and 130 to test our models. We used 8 input variables related to the concrete and its ingredients to account for different ingredient mixes and environmental factors.
+Our analysis looked at concrete ingredients, and how they relate to compressive strength. The purpose of the analysis was so that we could help make more informed design and production decisions for choosing ingredients to maximize concrete strength. For a buisness, creating concrete with maximized strength may allow for reduction on material costs as not all materials may be needed. Maximizing concrete strength may also lead to better reputation for a buisness, and allow them to sell their products at higher prices. For a government or construction firm, maximizing the strength of concrete may be useful in terms of purchasing strong concrete from a buisness, to improve public infrastructure and reduce the risk of failure for projects.
 
-Our best model explained roughly 75\% of the variation of concrete strength in the testing data (in comparison, the original model explained roughly 35\%). Our best model performed even better on the testing samples, explaining about 80\% of the variation.
+With 1030 concrete samples, we used 900 to train our models and 130 to test our models. We used 8 input variables related to the concrete and its ingredients to account for different ingredient mixes and environmental factors. Our best model explained roughly 75\% of the variation of concrete strength in the testing data (in comparison, the original model explained roughly 35\%). Our best model performed even better on the testing samples, explaining about 80\% of the variation.
 
-Overall, concrete strength is statistically associated with multiple features under our best model, including Cement, Blast Furnace Slag, Water, Superplasticizer, Fine Aggregate, and Age. However, out of those ingredients, only Cement, Blast Furnace Slag, Superplasticizer, and Age contribute positively to concrete compressive strength. We recommend using our final model to screen new proposed concrete formulations to see if they arre promising enough for physical testing.
+Overall, concrete strength is statistically associated with multiple features under our best model, including Cement, Blast Furnace Slag, Water, Superplasticizer, Fine Aggregate, and Age. However, out of those ingredients, only Cement, Blast Furnace Slag, Superplasticizer, and Age contribute positively to concrete compressive strength. We recommend using our final model to screen new proposed concrete formulations to see if they arre promising enough for physical testing. Specifically, we recommend maximizing Cement, Blast Furnace Slag, Superplasticizer, and Age values to provide the maximum compressive strength for concrete.
 
 \newpage
 
@@ -45,7 +45,7 @@ This analysis looks at 8 features of a concrete mix (cement, blast furnace slag,
 
 Cement, Blast Furnace Slag, Fly Ash are all concrete binders used in concrete mixes. Water helps lubricate the concrete mix and chemically reacts with the concrete binders to form the binding gel. Superplasticizer helps to reduce water in the concerete mix and create more durable concrete. Aggregates help to fill in the body of the concrete and are what is binded together by the concrete mix. Finally, the curing age represents the time for the chemical reaction of the concrete to complete.
 
-Of our 1030 observations, we used 900 for training. Table~\ref{tab:training-summary} summarizes the ingredient quantities, curing age, and compressive strength in the training dataset.
+Of our 1030 observations, we used 900 for training. Table~\ref{tab:training-summary} summarizes the ingredients and compressive strength in the training dataset.
 
 \begin{table}[H]
     \centering
